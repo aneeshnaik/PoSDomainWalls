@@ -9,6 +9,7 @@ Author: A. P. Naik
 import numpy as np
 from time import time
 import matplotlib.pyplot as plt
+import sys
 from tqdm import trange
 kpc = 3.0857e+19
 Mpc = 1e+3 * kpc
@@ -231,6 +232,7 @@ class Symm2DSolver:
         snapcount = 0
         self.phi = np.zeros((N_snapshots + 1, self.N_R, self.N_z))
         self.z = np.zeros((N_snapshots + 1))
+        self.acc = np.zeros((N_snapshots + 1))
         self.v = np.zeros((N_snapshots + 1))
         self.times = np.zeros((N_snapshots + 1))
         self.z[0] = z0
@@ -251,6 +253,7 @@ class Symm2DSolver:
                           verbose=verbose)
         u = self.u
         self.phi[0] = u
+        self.acc[0] = self._calc_acc(z0, u, a0, L_comp, L_z)
 
         # randomly initialise initial du/dt
         q = np.random.uniform(low=-1e-60, high=1e-60, size=u.shape)
@@ -287,6 +290,7 @@ class Symm2DSolver:
                 snapcount += 1
                 self.times[snapcount] = t
                 self.z[snapcount] = z
+                self.acc[snapcount] = self._calc_acc(z, u, a0, L_comp, L_z)
                 self.v[snapcount] = v_half - a * dt / 2
                 self.phi[snapcount] = u
 
@@ -383,10 +387,23 @@ def calc_rho_obj(M, L_R, L_z, z, grid):
 
 if __name__ == '__main__':
 
+    # parse job ind: i gives rho_SSB, j is v0, k is a0
+    job_ind = int(sys.argv[1])
+    i = job_ind // 15
+    j = (job_ind % 15) // 5
+    k = job_ind % 5
+    assert i in [0, 1]
+    assert j in [0, 1, 2]
+    assert k in [0, 1, 2, 3, 4]
+    n1 = ['screened_', 'unscreened_'][i]
+    n2 = ['v100_', 'v200_', 'v400_'][j]
+    n3 = ['a8', 'a9', 'a10', 'a11', 'a12'][k]
+    job_name = n1 + n2 + n3
+
     # symmetron parameters
-    rho_SSB = 1e-24
     L_comp = kpc
-    a0 = 1e-10
+    rho_SSB = [1e-24, 1e-20][i]
+    a0 = [1e-8, 1e-9, 1e-10, 1e-11, 1e-12][k]
 
     # object parameters
     M = 1e+8 * M_sun
@@ -395,20 +412,26 @@ if __name__ == '__main__':
 
     # initial object pos/vel
     z0 = -15 * kpc
-    v0 = 200 * kpc / Gyr
-    dt = 1e-7 * Gyr
-    t_max = 0.25 * Gyr
+    v0 = ([100, 200, 400][j]) * kpc / Gyr
+
+    # sim params
+    t_max = 50 * kpc / v0
+    dt = 5e-8 * Gyr
+    N_snapshots = 500
+    R_max = 20 * kpc
+    N_R = 80
+    z_max = 50 * kpc
+    N_z = 401
 
     # set up solver
-    R_max = 20 * kpc
-    z_max = 50 * kpc
-    s = Symm2DSolver(R_max=R_max, z_max=z_max, N_R=80, N_z=401)
+    s = Symm2DSolver(R_max=R_max, z_max=z_max, N_R=N_R, N_z=N_z)
 
     # solve
+    print("Running simulation " + job_name)
     s.solve_dynamic(a0=a0, rho_SSB=rho_SSB, L_comp=L_comp,
                     M=M, L_R=L_R, L_z=L_z,
-                    z0=z0, v0=v0, dt=dt, t_max=t_max, N_snapshots=500,
+                    z0=z0, v0=v0, dt=dt, t_max=t_max, N_snapshots=N_snapshots,
                     verbose=True)
 
     # save
-    np.savez("symmetron_DW_sim", times=s.times, z=s.z, v=s.v, phi=s.phi)
+    np.savez(job_name, times=s.times, z=s.z, acc=s.acc, v=s.v, phi=s.phi)
