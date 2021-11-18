@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-SUMMARY.
+2D (axisymmetric cylindricals) time-dependent symmetron EOM solver.
 
-Created: MONTH YEAR
+Created: November 2021
 Author: A. P. Naik
 """
 import numpy as np
@@ -18,8 +18,6 @@ M_sun = 1.988409870698051e+30
 year = 31557600.0
 Gyr = 1e+9 * year
 c = 299792458.0
-hbar = 1.0545718176461565e-34
-M_pl = np.sqrt(hbar * c / (8 * pi * G))
 
 
 def L_op(phi, p, q):
@@ -402,9 +400,9 @@ if __name__ == '__main__':
     t_max = 0.25 * Gyr
 
     # set up solver
-    R_max = 50 * kpc
+    R_max = 20 * kpc
     z_max = 50 * kpc
-    s = Symm2DSolver(R_max=R_max, z_max=z_max, N_R=200, N_z=401)
+    s = Symm2DSolver(R_max=R_max, z_max=z_max, N_R=80, N_z=401)
 
     # solve
     s.solve_dynamic(a0=a0, rho_SSB=rho_SSB, L_comp=L_comp,
@@ -414,14 +412,3 @@ if __name__ == '__main__':
 
     # save
     np.savez("symmetron_DW_sim", times=s.times, z=s.z, v=s.v, phi=s.phi)
-
-    # load data
-    data = np.load("symmetron_DW_sim.npz")
-    times = data['times'] / Gyr
-    v = data['v'] / 1000
-
-    import matplotlib.pyplot as plt
-    plt.plot(times, v)
-    plt.ylim(0, 200)
-    
-    print(v.max()/v.min()-1)
