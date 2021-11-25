@@ -238,7 +238,7 @@ if __name__ == '__main__':
 
     # random satellite positions
     rng = np.random.default_rng(42)
-    N_sat = 50
+    N_sat = 100
     r = rng.uniform(low=0, high=400 * kpc, size=N_sat)
     phi = rng.uniform(low=0, high=2 * pi, size=N_sat)
     theta = np.arccos(1 - 2 * rng.uniform(size=N_sat))
@@ -249,7 +249,7 @@ if __name__ == '__main__':
 
     # velocities
     v_esc = np.sqrt(-2 * NFW_potential(pos, M_vir=M_vir, c_vir=c_vir))
-    v = rng.uniform(low=np.zeros_like(v_esc), high=v_esc, size=N_sat)
+    v = rng.uniform(low=np.zeros_like(v_esc), high=0.5 * v_esc, size=N_sat)
     phi = rng.uniform(low=0, high=2 * pi, size=N_sat)
     theta = np.arccos(1 - 2 * rng.uniform(size=N_sat))
     vx = v * np.sin(theta) * np.cos(phi)
@@ -264,4 +264,4 @@ if __name__ == '__main__':
     t = sim.times / Gyr
 
     # save
-    np.savez("wall", x=x, t=t)
+    #np.savez("wall", x=x, t=t)
