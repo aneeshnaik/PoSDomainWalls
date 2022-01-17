@@ -6,122 +6,13 @@ Simulate satellites evolving in MW potential with domain wall.
 Created: October 2021
 Author: A. P. Naik
 """
+import sys
 import numpy as np
 from tqdm import trange
-G = 6.67408e-11
-kpc = 3.0857e+19
-pc = 3.0857e+16
-pi = np.pi
-M_sun = 1.9885e+30
-Gyr = 31536000.0 * 1e+9
+sys.path.append("..")
+from src.constants import MSUN, KPC, PI, GYR
+from src.nfw import nfw_acceleration, nfw_potential
 
-
-def NFW_param_conversion(M_vir, c_vir, delta=200, h=0.7):
-    """
-    For given virial mass and concentration, calculate NFW scale density and
-    scale radius.
-
-    Note that the virial radius here means the radius containing a region of
-    average density equal to delta times the cosmic critical density. The
-    virial mass is then the mass enclosed within this radius, while the virial
-    concentration is the ratio of the virial radius to the NFW scale radius.
-
-    Note that this conversion is very mildly cosmology dependent,
-    as the definition of the virial radius depends on the critical density,
-    which in turn depends on h.
-
-    Parameters
-    ----------
-    M_vir: float
-        Virial mass of halo. UNITS: kilograms.
-    c_vir: float
-        Virial concentration of halo. Dimensionless.
-    delta: float, optional
-        Virial ratio --- See note above. Dimensionless.
-    h : float, optional
-        Dimensionless Hubble constant. Default is 0.7
-
-    Returns
-    -------
-    rho_0: float
-        NFW scale density. UNITS: kilograms/metre^3
-    R_s: float
-        NFW scale radius. UNITS: metres.
-    """
-
-    # calculate critical density
-    H0 = h * 100 * 1000 / (1e+6 * pc)
-    rho_c = 3 * H0**2 / (8 * pi * G)
-
-    # calculate virial radius
-    R_vir = (3 * M_vir / (4 * pi * delta * rho_c))**(1 / 3)
-
-    # calculate scale radius
-    R_s = R_vir / c_vir
-
-    # calculate rho_0
-    denom = 4 * pi * R_s**3 * (np.log(1 + c_vir) - (c_vir / (1 + c_vir)))
-    rho_0 = M_vir / denom
-
-    return rho_0, R_s
-
-
-def NFW_potential(pos, M_vir, c_vir):
-    """
-    Potential of NFW halo at given position.
-
-    Parameters
-    ----------
-    pos : numpy array, shape (N, 3) or (3,)
-        Positions at which to calculate potential. UNITS: metres.
-    M_vir: float
-        Virial mass of halo. UNITS: kilograms.
-    c_vir: float
-        Virial concentration of halo. Dimensionless.
-
-    Returns
-    -------
-    phi : (N,) array or float, depending on shape of 'pos' parameter.
-        Potential at given positions. UNITS: metres^2/seconds^2.
-    """
-
-    rho_0, r_s = NFW_param_conversion(M_vir, c_vir)
-
-    r = np.linalg.norm(pos, axis=-1)
-    phi = - (4 * pi * G * rho_0 * r_s**3 / r) * np.log(1 + r / r_s)
-    return phi
-
-
-def NFW_acceleration(pos, M_vir, c_vir):
-    """
-    Acceleration due to NFW halo at given position.
-
-    Parameters
-    ----------
-    pos : numpy array, shape (N, 3) or (3,)
-        Positions at which to calculate acceleration. UNITS: metres.
-    M_vir: float
-        Virial mass of halo. UNITS: kilograms.
-    c_vir: float
-        Virial concentration of halo. Dimensionless.
-
-    Returns
-    -------
-    acc : array, same shape as 'pos' parameter.
-        Acceleration at given positions. UNITS: m/s^2.
-    """
-    rho_0, r_s = NFW_param_conversion(M_vir, c_vir)
-
-    if pos.ndim == 1:
-        r = np.linalg.norm(pos)
-    else:
-        r = np.linalg.norm(pos, axis=-1)[:, None]
-
-    prefac = 4 * pi * G * rho_0 * r_s**3
-    term1 = np.log(1 + r / r_s) / r**2
-    term2 = 1 / (r * (r_s + r))
-    acc = -prefac * (term1 - term2) * (pos / r)
-    return acc
 
 
 def wall_acceleration(pos, a_DW, l_DW):
@@ -146,7 +37,7 @@ class Simulation:
         self.N = vel0.shape[0]
 
         def acc(pos):
-            a = NFW_acceleration(pos, M_vir=M_vir, c_vir=c_vir)
+            a = nfw_acceleration(pos, M_vir=M_vir, c_vir=c_vir)
             a += wall_acceleration(pos, a_DW=a_DW, l_DW=l_DW)
             return a
         self.acc = acc
@@ -231,16 +122,16 @@ class Simulation:
 if __name__ == '__main__':
 
     # MW and DW params
-    M_vir = 1e+12 * M_sun
+    M_vir = 1e+12 * MSUN
     c_vir = 10
     a_DW = 5e-10
-    l_DW = 10 * kpc
+    l_DW = 10 * KPC
 
     # random satellite positions
     rng = np.random.default_rng(42)
     N_sat = 100
-    r = rng.uniform(low=0, high=400 * kpc, size=N_sat)
-    phi = rng.uniform(low=0, high=2 * pi, size=N_sat)
+    r = rng.uniform(low=0, high=400 * KPC, size=N_sat)
+    phi = rng.uniform(low=0, high=2 * PI, size=N_sat)
     theta = np.arccos(1 - 2 * rng.uniform(size=N_sat))
     x = r * np.sin(theta) * np.cos(phi)
     y = r * np.sin(theta) * np.sin(phi)
@@ -248,9 +139,9 @@ if __name__ == '__main__':
     pos = np.stack((x, y, z), axis=-1)
 
     # velocities
-    v_esc = np.sqrt(-2 * NFW_potential(pos, M_vir=M_vir, c_vir=c_vir))
+    v_esc = np.sqrt(-2 * nfw_potential(pos, M_vir=M_vir, c_vir=c_vir))
     v = rng.uniform(low=np.zeros_like(v_esc), high=0.5 * v_esc, size=N_sat)
-    phi = rng.uniform(low=0, high=2 * pi, size=N_sat)
+    phi = rng.uniform(low=0, high=2 * PI, size=N_sat)
     theta = np.arccos(1 - 2 * rng.uniform(size=N_sat))
     vx = v * np.sin(theta) * np.cos(phi)
     vy = v * np.sin(theta) * np.sin(phi)
@@ -260,8 +151,8 @@ if __name__ == '__main__':
     # simulate
     sim = Simulation(pos0=pos, vel0=vel, M_vir=M_vir, c_vir=c_vir, a_DW=a_DW, l_DW=l_DW)
     sim.run(t_max=3e+17)
-    x = sim.positions / kpc
-    t = sim.times / Gyr
+    x = sim.positions / KPC
+    t = sim.times / GYR
 
     # save
     #np.savez("wall", x=x, t=t)
