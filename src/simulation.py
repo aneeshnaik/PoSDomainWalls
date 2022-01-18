@@ -1,28 +1,15 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Simulate satellites evolving in MW potential with domain wall.
+SUMMARY.
 
-Created: October 2021
+Created: MONTH YEAR
 Author: A. P. Naik
 """
-import sys
 import numpy as np
 from tqdm import trange
-sys.path.append("..")
-from src.constants import MSUN, KPC, PI, GYR
-from src.nfw import nfw_acceleration, nfw_potential
-
-
-
-def wall_acceleration(pos, a_DW, l_DW):
-    if pos.ndim == 1:
-        z = pos[2]
-    else:
-        z = pos[..., 2]
-    acc = np.zeros_like(pos)
-    acc[..., 2] = -a_DW * np.tanh(z / (2 * l_DW)) / np.cosh(z / (2 * l_DW))**2
-    return acc
+from .nfw import nfw_acceleration
+from .wall import wall_acceleration
 
 
 class Simulation:
@@ -117,42 +104,3 @@ class Simulation:
         self.v = v_half - 0.5 * dt * acc
 
         return
-
-
-if __name__ == '__main__':
-
-    # MW and DW params
-    M_vir = 1e+12 * MSUN
-    c_vir = 10
-    a_DW = 5e-10
-    l_DW = 10 * KPC
-
-    # random satellite positions
-    rng = np.random.default_rng(42)
-    N_sat = 100
-    r = rng.uniform(low=0, high=400 * KPC, size=N_sat)
-    phi = rng.uniform(low=0, high=2 * PI, size=N_sat)
-    theta = np.arccos(1 - 2 * rng.uniform(size=N_sat))
-    x = r * np.sin(theta) * np.cos(phi)
-    y = r * np.sin(theta) * np.sin(phi)
-    z = r * np.cos(theta)
-    pos = np.stack((x, y, z), axis=-1)
-
-    # velocities
-    v_esc = np.sqrt(-2 * nfw_potential(pos, M_vir=M_vir, c_vir=c_vir))
-    v = rng.uniform(low=np.zeros_like(v_esc), high=0.5 * v_esc, size=N_sat)
-    phi = rng.uniform(low=0, high=2 * PI, size=N_sat)
-    theta = np.arccos(1 - 2 * rng.uniform(size=N_sat))
-    vx = v * np.sin(theta) * np.cos(phi)
-    vy = v * np.sin(theta) * np.sin(phi)
-    vz = v * np.cos(theta)
-    vel = np.stack((vx, vy, vz), axis=-1)
-
-    # simulate
-    sim = Simulation(pos0=pos, vel0=vel, M_vir=M_vir, c_vir=c_vir, a_DW=a_DW, l_DW=l_DW)
-    sim.run(t_max=3e+17)
-    x = sim.positions / KPC
-    t = sim.times / GYR
-
-    # save
-    #np.savez("wall", x=x, t=t)
