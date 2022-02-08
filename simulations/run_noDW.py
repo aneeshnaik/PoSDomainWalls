@@ -8,6 +8,7 @@ Author: A. P. Naik
 """
 import numpy as np
 import sys
+import os
 sys.path.append("..")
 from src.constants import MSUN, KPC, GYR
 from src.simulation import Simulation
@@ -34,6 +35,7 @@ if __name__ == '__main__':
 
     # run simulation
     sim.run(t_max=3e+18, N_snapshots=5000, dt=1e+12)
-    np.savez("sim_noDW",
+    savedir = os.environ['POSDWDIR']
+    np.savez(f"{savedir}/sim_noDW",
              x=sim.positions / KPC, v=sim.velocities / 1000,
              t=sim.times / GYR)
