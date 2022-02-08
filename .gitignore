@@ -1,4 +1,7 @@
-old
+*.DS_Store
+*__pycache__
 *.npz
 *.out
 *.sh
+old
+analysis
