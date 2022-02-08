@@ -11,7 +11,7 @@ from .constants import KPC, PI
 from .nfw import nfw_potential
 
 
-def sample_satellites(N_sat, M_vir, c_vir, seed=42):
+def sample_satellites(N_sat, M_vir, c_vir, seed=42, f_vesc=0.5):
 
     # random seed
     rng = np.random.default_rng(seed)
@@ -27,7 +27,7 @@ def sample_satellites(N_sat, M_vir, c_vir, seed=42):
 
     # velocities
     v_esc = np.sqrt(-2 * nfw_potential(pos, M_vir=M_vir, c_vir=c_vir))
-    v = rng.uniform(low=np.zeros_like(v_esc), high=0.5 * v_esc, size=N_sat)
+    v = rng.uniform(low=np.zeros_like(v_esc), high=f_vesc * v_esc, size=N_sat)
     phi = rng.uniform(low=0, high=2 * PI, size=N_sat)
     theta = np.arccos(1 - 2 * rng.uniform(size=N_sat))
     vx = v * np.sin(theta) * np.cos(phi)

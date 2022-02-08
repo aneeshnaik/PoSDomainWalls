@@ -31,7 +31,7 @@ class Simulation:
 
         return
 
-    def run(self, t_max, N_snapshots=500):
+    def run(self, t_max, N_snapshots=500, dt=1e+12):
         """
         Run simulation.
 
@@ -47,7 +47,6 @@ class Simulation:
         # set up time parameters
         self.times = np.array([0])
         self.t_max = t_max
-        dt = 1e+12
         self.dt = dt
 
         # N_iter is number of timesteps, need to be integer multiple of

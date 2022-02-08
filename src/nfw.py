@@ -86,7 +86,7 @@ def nfw_potential(pos, M_vir, c_vir):
     return phi
 
 
-def nfw_acceleration(pos, M_vir, c_vir):
+def nfw_acceleration(pos, M_vir, c_vir, soft=10 * PC):
     """
     Acceleration due to NFW halo at given position.
 
@@ -110,6 +110,9 @@ def nfw_acceleration(pos, M_vir, c_vir):
         r = np.linalg.norm(pos)
     else:
         r = np.linalg.norm(pos, axis=-1)[:, None]
+
+    # softening
+    r = np.sqrt(r**2 + soft**2)
 
     prefac = 4 * PI * G * rho_0 * r_s**3
     term1 = np.log(1 + r / r_s) / r**2
