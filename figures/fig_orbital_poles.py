@@ -8,23 +8,25 @@ Author: A. P. Naik
 """
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 
 
 if __name__ == '__main__':
 
     # load data
-    data = np.load("../simulations/sim_noDW.npz")
+    simdir = os.environ["POSDWDIR"]
+    data = np.load(f"{simdir}/sim_noDW.npz")
     x0 = data['x']
     v0 = data['v']
     t0 = data['t']
-    data = np.load("../simulations/sim_DW.npz")
+    data = np.load(f"{simdir}/sim_DW.npz")
     x1 = data['x']
     v1 = data['v']
     t1 = data['t']
     N_sat = x0.shape[1]
     assert x1.shape[1] == N_sat
     np.testing.assert_allclose(t0, t1)
-    
+
     # calculate angular momenta
     L0 = np.cross(x0, v0)
     L1 = np.cross(x1, v1)
@@ -51,9 +53,12 @@ if __name__ == '__main__':
     plt.rcParams['font.size'] = 9
     plt.rcParams['ytick.labelsize'] = 8
     plt.rcParams['xtick.labelsize'] = 8
-    sargs = {'s': 0.1, 'c': 'teal', 'rasterized': True}
+    c0 = 'goldenrod'
+    c1 = 'teal'
+    sargs0 = {'s': 0.1, 'c': c0, 'rasterized': True}
+    sargs1 = {'s': 0.1, 'c': c1, 'rasterized': True}
     proj = 'lambert'
-    
+
     # set up figure
     asp = 7 / 6.25
     Xgap = 0.02
@@ -70,10 +75,10 @@ if __name__ == '__main__':
     ax11 = fig.add_axes([X0 + Xgap + dX, Y0, dX, dY], projection=proj)
 
     # plot
-    ax00.scatter(phi00, tht00, **sargs)
-    ax01.scatter(phi01, tht01, **sargs)
-    ax10.scatter(phi10, tht10, **sargs)
-    ax11.scatter(phi11, tht11, **sargs)
+    ax00.scatter(phi00, tht00, **sargs0)
+    ax01.scatter(phi01, tht01, **sargs0)
+    ax10.scatter(phi10, tht10, **sargs1)
+    ax11.scatter(phi11, tht11, **sargs1)
 
     # labels, ticks etc.
     for ax in fig.axes:

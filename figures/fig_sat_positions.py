@@ -8,15 +8,17 @@ Author: A. P. Naik
 """
 import matplotlib.pyplot as plt
 import numpy as np
+import os
 
 
 if __name__ == '__main__':
 
     # load data
-    data = np.load("../simulations/sim_noDW.npz")
+    simdir = os.environ["POSDWDIR"]
+    data = np.load(f"{simdir}/sim_noDW.npz")
     x0 = data['x']
     t0 = data['t']
-    data = np.load("../simulations/sim_DW.npz")
+    data = np.load(f"{simdir}/sim_DW.npz")
     x1 = data['x']
     t1 = data['t']
     N_sat = x0.shape[1]
@@ -29,8 +31,12 @@ if __name__ == '__main__':
     plt.rcParams['font.size'] = 9
     plt.rcParams['ytick.labelsize'] = 8
     plt.rcParams['xtick.labelsize'] = 8
-    sargs = {'s': 1, 'c': 'teal', 'rasterized': True}
-    largs = {'c': 'teal', 'alpha': 0.05, 'rasterized': True}
+    c0 = 'goldenrod'
+    c1 = 'teal'
+    sargs0 = {'s': 1, 'c': c0, 'rasterized': True}
+    sargs1 = {'s': 1, 'c': c1, 'rasterized': True}
+    largs0 = {'c': c0, 'alpha': 0.05, 'rasterized': True}
+    largs1 = {'c': c1, 'alpha': 0.05, 'rasterized': True}
 
     # set up figure
     asp = 7 / 6.75
@@ -47,12 +53,12 @@ if __name__ == '__main__':
     ax11 = fig.add_axes([left + Xgap + dX, bottom, dX, dY])
 
     # plot satellites positions
-    ax00.scatter(x0[-1, :, 0], x0[-1, :, 2], **sargs)
-    ax10.scatter(x1[-1, :, 0], x1[-1, :, 2], **sargs)
+    ax00.scatter(x0[-1, :, 0], x0[-1, :, 2], **sargs0)
+    ax10.scatter(x1[-1, :, 0], x1[-1, :, 2], **sargs1)
 
     # plot orbits
-    ax01.plot(x0[:, :500, 0], x0[:, :500, 2], **largs)
-    ax11.plot(x1[:, :500, 0], x1[:, :500, 2], **largs)
+    ax01.plot(x0[:, :500, 0], x0[:, :500, 2], **largs0)
+    ax11.plot(x1[:, :500, 0], x1[:, :500, 2], **largs1)
 
     # labels, limits etc.
     for ax in fig.axes:
