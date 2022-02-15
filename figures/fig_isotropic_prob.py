@@ -87,12 +87,12 @@ if __name__ == '__main__':
     # set up figure
     X0 = 0.035
     X1 = 0.95
-    Xgap = 0.08
-    Y0 = 0.25
-    Y1 = 0.95
+    Xgap = 0.095
+    Y0 = 0.22
+    Y1 = 0.91
     dX = (X1 - X0 - 2 * Xgap) / 3
     dY = Y1 - Y0
-    fig = plt.figure(figsize=(7, 3), dpi=150)
+    fig = plt.figure(figsize=(7, 3.2), dpi=150)
     ax0 = fig.add_axes([X0, Y0, dX, dY], projection='polar')
     ax1 = fig.add_axes([X0 + dX + Xgap, Y0, dX, dY], projection='polar')
     ax2 = fig.add_axes([X0 + 2 * (dX + Xgap), Y0, dX, dY], projection='polar')
@@ -113,13 +113,16 @@ if __name__ == '__main__':
     # ticks etc
     for ax in [ax0, ax1, ax2]:
         ax.grid(True, c='k', lw=0.25)
-        labs = ['0', r'$\pi / 4$', r'$\pi / 2$', r'$3\pi / 4$',
+        labs = [r'$\hat{\phi} = 0$', r'$\pi / 4$', r'$\pi / 2$', r'$3\pi / 4$',
                 r'$\pi$', r'$5\pi / 4$', r'$3\pi / 2$', r'$7\pi / 4$']
         ax.xaxis.set_ticklabels(labs)
         ax.set_yticks([np.pi/4, np.pi/2])
-        ax.yaxis.set_ticklabels([r"$\theta = \pi / 4$", r"$\theta = \pi / 2$"])
+        ax.yaxis.set_ticklabels([r"$\hat{\theta} = \pi / 4$", r"$\hat{\theta} = \pi / 2$"])
     cbar2.set_ticks([1e-32, 1e-24, 1e-16, 1e-8, 1e+0])
     cbar1.set_label(r"$\mathcal{L}$")
     cbar2.set_label(r"$\mathcal{L}_\mathrm{DW} / \mathcal{L}_\mathrm{no\,DW}$")
+    ax0.text(0.5, 1.2, "No domain wall", ha='center', va='bottom', transform=ax0.transAxes)
+    ax1.text(0.5, 1.2, "Domain wall at $z=0$", ha='center', va='bottom', transform=ax1.transAxes)
+    ax2.text(0.5, 1.2, "Ratio", ha='center', va='bottom', transform=ax2.transAxes)
 
     fig.savefig("fig_isotropic_prob.pdf")
