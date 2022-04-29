@@ -49,7 +49,7 @@ def calc_prob(pos, theta, phi):
 if __name__ == '__main__':
 
     # load data
-    simdir = os.environ["POSDWDIR"]
+    simdir = os.environ["POSDWDDIR"]
     data = np.load(f"{simdir}/sim_noDW.npz")
     pos0 = data['x']
     data = np.load(f"{simdir}/sim_DW.npz")
@@ -100,12 +100,12 @@ if __name__ == '__main__':
     # plot
     im0 = ax0.pcolormesh(phi_grid, theta_grid, p0, **args1)
     im1 = ax1.pcolormesh(phi_grid, theta_grid, p1, **args1)
-    im2 = ax2.pcolormesh(phi_grid, theta_grid, p1/p0, **args2)
+    im2 = ax2.pcolormesh(phi_grid, theta_grid, p1 / p0, **args2)
 
     # colourbars
     CdY = 0.035
     CY = Y0 - 2.5 * CdY
-    cax0 = fig.add_axes([X0, CY, 2*dX + Xgap, CdY])
+    cax0 = fig.add_axes([X0, CY, 2 * dX + Xgap, CdY])
     cax1 = fig.add_axes([X0 + 2 * (dX + Xgap), CY, dX, CdY])
     cbar1 = plt.colorbar(im1, cax=cax0, orientation='horizontal')
     cbar2 = plt.colorbar(im2, cax=cax1, orientation='horizontal')
@@ -116,13 +116,14 @@ if __name__ == '__main__':
         labs = [r'$\hat{\phi} = 0$', r'$\pi / 4$', r'$\pi / 2$', r'$3\pi / 4$',
                 r'$\pi$', r'$5\pi / 4$', r'$3\pi / 2$', r'$7\pi / 4$']
         ax.xaxis.set_ticklabels(labs)
-        ax.set_yticks([np.pi/4, np.pi/2])
-        ax.yaxis.set_ticklabels([r"$\hat{\theta} = \pi / 4$", r"$\hat{\theta} = \pi / 2$"])
+        ax.set_yticks([np.pi / 4, np.pi / 2])
+        labs = [r"$\hat{\theta} = \pi / 4$", r"$\hat{\theta} = \pi / 2$"]
+        ax.yaxis.set_ticklabels(labs)
     cbar2.set_ticks([1e-32, 1e-24, 1e-16, 1e-8, 1e+0])
-    cbar1.set_label(r"$\mathcal{L}$")
-    cbar2.set_label(r"$\mathcal{L}_\mathrm{DW} / \mathcal{L}_\mathrm{no\,DW}$")
-    ax0.text(0.5, 1.2, "No domain wall", ha='center', va='bottom', transform=ax0.transAxes)
-    ax1.text(0.5, 1.2, "Domain wall at $z=0$", ha='center', va='bottom', transform=ax1.transAxes)
-    ax2.text(0.5, 1.2, "Ratio", ha='center', va='bottom', transform=ax2.transAxes)
+    cbar1.set_label(r"$\mathcal{P}$")
+    cbar2.set_label(r"$\mathcal{P}_\mathrm{DW} / \mathcal{P}_\mathrm{no\,DW}$")
+    for i, ax in enumerate([ax0, ax1, ax2]):
+        t = ["No domain wall", "Domain wall at $z=0$", "Ratio"][i]
+        ax.text(0.5, 1.2, t, ha='center', va='bottom', transform=ax.transAxes)
 
     fig.savefig("fig_isotropic_prob.pdf")
