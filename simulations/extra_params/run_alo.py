@@ -35,7 +35,7 @@ if __name__ == '__main__':
 
     # run simulation
     sim.run(t_max=3e+18, N_snapshots=5000, dt=1e+12)
-    savedir = os.environ['POSDWDIR']
+    savedir = os.environ['POSDWDDIR']
     np.savez(f"{savedir}/extra_params/sim_alo",
              x=sim.positions / KPC, v=sim.velocities / 1000,
              t=sim.times / GYR)

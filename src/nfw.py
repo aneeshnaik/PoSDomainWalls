@@ -98,6 +98,8 @@ def nfw_acceleration(pos, M_vir, c_vir, soft=10 * PC):
         Virial mass of halo. UNITS: kilograms.
     c_vir: float
         Virial concentration of halo. Dimensionless.
+    soft: float
+        Gravitational softening. Default is 10pc.
 
     Returns
     -------

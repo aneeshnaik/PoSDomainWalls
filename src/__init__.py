@@ -6,7 +6,3 @@ __init__ file of src subdirectory.
 Created: January 2022
 Author: A. P. Naik
 """
-from . import constants
-from . import nfw
-
-__all__ = ["constants", "nfw"]

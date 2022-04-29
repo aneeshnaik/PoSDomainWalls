@@ -16,4 +16,4 @@ PC = 3.085677581491367e+16  # metres
 KPC = 1e+3 * PC             # metres
 MSUN = 1.9884099e+30        # kg
 YEAR = 31557600.0           # seconds N.B. Julian yr, i.e. 365.25 days
-GYR = 1e+9 * YEAR          # seconds
+GYR = 1e+9 * YEAR           # seconds

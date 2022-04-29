@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-SUMMARY.
+Main simulation code.
 
-Created: MONTH YEAR
+Created: January 2022
 Author: A. P. Naik
 """
 import numpy as np
@@ -13,9 +13,34 @@ from .wall import wall_acceleration
 
 
 class Simulation:
+    """
+    Simulation of point satellites around NFW halo and domain wall.
+
+    Parameters
+    ----------
+    pos0 : numpy array, shape (N, 3)
+        Initial positions of N satellites. UNITS: m.
+    vel0 : numpy array, shape (N, 3)
+        Initial velocities of N satellites. UNITS: m/s.
+    M_vir : float
+        Virial mass of host galaxy.
+    c_vir : float
+        Virial concentration of host galaxy.
+    a_DW : float
+        Domain wall acceleration.
+    l_DW : float
+        Domain wall width.
+
+    Methods
+    -------
+    run(t_max, N_snapshots=500, dt=1e+12):
+        Run simulation.
+
+    """
 
     def __init__(self, pos0, vel0, M_vir, c_vir, a_DW, l_DW):
-        # need to define: self.acc
+        """Initialise Simulation. See class docstring for details."""
+
         assert pos0.shape == vel0.shape
         assert pos0.ndim == 2
 
@@ -43,6 +68,8 @@ class Simulation:
         N_snapshots : int
             Number of snapshots to store, EXCLUDING initial snapshot.
             Default is 500 (so 501 snapshots are saved overall).
+        dt : float, optional
+            Timestep size. UNITS: seconds. Default is 1e+12 seconds.
         """
         # set up time parameters
         self.times = np.array([0])
