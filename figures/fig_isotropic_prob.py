@@ -7,7 +7,7 @@ Created on Thu Feb 10 17:52:32 2022
 """
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib.colors import LogNorm
+from matplotlib.colors import LogNorm, LinearSegmentedColormap as LSCmap
 import os
 from scipy.stats import multinomial
 
@@ -81,8 +81,10 @@ if __name__ == '__main__':
     c2 = 'teal'
     norm1 = LogNorm(vmax=1e-28, vmin=1e-60)
     norm2 = LogNorm(vmax=1, vmin=1e-32)
-    args1 = {'norm': norm1, 'cmap': 'bone', 'shading': 'gouraud'}
-    args2 = {'norm': norm2, 'cmap': 'Spectral', 'shading': 'gouraud'}
+    cmap1 = LSCmap.from_list("", ['k', "teal","w"])
+    cmap2 = LSCmap.from_list("", ["darkgoldenrod", 'w'])
+    args1 = {'norm': norm1, 'cmap': cmap1, 'shading': 'gouraud'}
+    args2 = {'norm': norm2, 'cmap': cmap2, 'shading': 'gouraud'}
 
     # set up figure
     X0 = 0.035

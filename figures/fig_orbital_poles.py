@@ -55,7 +55,7 @@ if __name__ == '__main__':
     plt.rcParams['xtick.labelsize'] = 8
     c0 = 'goldenrod'
     c1 = 'teal'
-    sargs0 = {'s': 0.1, 'c': c0, 'rasterized': True}
+    sargs0 = {'s': 0.18, 'c': c0, 'rasterized': True}
     sargs1 = {'s': 0.1, 'c': c1, 'rasterized': True}
     proj = 'lambert'
 
@@ -82,7 +82,7 @@ if __name__ == '__main__':
 
     # labels, ticks etc.
     for ax in fig.axes:
-        ax.grid(True)
+        ax.grid(True, color='k', ls='dotted', lw=0.5)
         for i in range(11):
             if (i + 1) % 3:
                 t = ax.xaxis.get_major_ticks()[i]

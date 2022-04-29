@@ -78,10 +78,10 @@ if __name__ == '__main__':
     ax1 = fig.add_axes([X0, Y0 + dY, dX, dY])
 
     # plot
-    ax0.plot(t1, h0, c=c1)
-    ax0.plot(t1, h1, c=c2)
-    ax1.plot(t1, f0, label="No domain wall", c=c1)
-    ax1.plot(t1, f1, label="Domain wall at $z=0$", c=c2)
+    ax0.plot(t1, h0, label="No domain wall", c=c1)
+    ax0.plot(t1, h1, label="Domain wall at $z=0$", c=c2)
+    ax1.plot(t1, f0, c=c1)
+    ax1.plot(t1, f1, c=c2)
 
     # limits etc
     for ax in [ax0, ax1]:
@@ -93,7 +93,7 @@ if __name__ == '__main__':
     ax0.set_ylim(0, 170)
     ax1.set_ylim(0, 1.05)
     ax1.tick_params(labelbottom=False)
-    ax1.legend(frameon=False)
+    ax0.legend(frameon=False)
 
     # save figure
     fig.savefig("fig_planarity.pdf")

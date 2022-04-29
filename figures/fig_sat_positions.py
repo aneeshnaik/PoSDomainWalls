@@ -14,7 +14,7 @@ import os
 if __name__ == '__main__':
 
     # load data
-    simdir = os.environ["POSDWDIR"]
+    simdir = os.environ["POSDWDDIR"]
     data = np.load(f"{simdir}/sim_noDW.npz")
     x0 = data['x']
     t0 = data['t']
@@ -31,11 +31,12 @@ if __name__ == '__main__':
     plt.rcParams['font.size'] = 9
     plt.rcParams['ytick.labelsize'] = 8
     plt.rcParams['xtick.labelsize'] = 8
-    c0 = 'rebeccapurple'
+    c0 = 'goldenrod'
     c1 = 'teal'
-    sargs0 = {'s': 1, 'c': c1, 'rasterized': True}
+    c2 = 'k'
+    sargs0 = {'s': 1, 'c': c0, 'rasterized': True}
     sargs1 = {'s': 1, 'c': c1, 'rasterized': True}
-    largs0 = {'c': c1, 'alpha': 0.05, 'rasterized': True}
+    largs0 = {'c': c0, 'alpha': 0.05, 'rasterized': True}
     largs1 = {'c': c1, 'alpha': 0.05, 'rasterized': True}
     arrargs = {'fc': 'k', 'width': 2, 'zorder': 10,
                'length_includes_head': True}
@@ -63,10 +64,10 @@ if __name__ == '__main__':
     ax11.plot(x1[:, :500, 0], x1[:, :500, 2], **largs1)
 
     # highlights
-    ax01.plot(x0[:, 0, 0], x0[:, 0, 2], c=c0, lw=0.8, alpha=0.9, zorder=8)
-    ax01.plot(x0[:, 9, 0], x0[:, 9, 2], c='k', lw=0.6, alpha=0.5, zorder=5)
-    ax11.plot(x1[:, 0, 0], x1[:, 0, 2], c=c0, lw=0.8, alpha=0.9, zorder=8)
-    ax11.plot(x1[:, 9, 0], x1[:, 9, 2], c='k', lw=0.6, alpha=0.5, zorder=5)
+    ax01.plot(x0[:, 0, 0], x0[:, 0, 2], c=c2, lw=1.1, alpha=1, zorder=8, ls='dotted')
+    ax01.plot(x0[:, 9, 0], x0[:, 9, 2], c=c2, lw=0.7, alpha=0.8, zorder=5)
+    ax11.plot(x1[:, 0, 0], x1[:, 0, 2], c=c2, lw=1.1, alpha=1, zorder=8, ls='dotted')
+    ax11.plot(x1[:, 9, 0], x1[:, 9, 2], c=c2, lw=0.7, alpha=0.8, zorder=5)
 
     # labels, limits etc.
     for ax in fig.axes:
