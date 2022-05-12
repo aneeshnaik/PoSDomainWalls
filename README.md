@@ -2,13 +2,9 @@
 
 ## Summary
 
-This code was used to generate the results in the article [Naik &amp; Burrage (2022)](https://arxiv.org/abs/2205.00712): Dark sector domain walls could explain the observed planes of satellites
+This code was used to generate the results in the article [Naik &amp; Burrage (2022)](https://arxiv.org/abs/2205.00712): "Dark sector domain walls could explain the observed planes of satellites".
 
-The code was used to run two restricted N-body simulations of a large number of massless point particles representing Milky Way satellites, one simulation with the additional presence of a scalar domain wall (and accompanying fifth force), one without.
-
-Please see the paper for more details.
-
-As described below, the mock datasets used to generate the results in the paper are not stored in this repository, but [here](https://doi.org/10.5281/zenodo.5781350). Alternatively, the scripts in the `/data` folder can be used to generate the mock datasets anew.
+The code was used to run two restricted N-body simulations of a large number of massless point particles representing Milky Way satellites, one simulation with the additional presence of a scalar domain wall (and accompanying fifth force), one without. Please see the paper for more details.
 
 ## Citation
 
