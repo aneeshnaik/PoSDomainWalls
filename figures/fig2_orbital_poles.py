@@ -58,16 +58,16 @@ if __name__ == '__main__':
 
     # set up figure
     asp = 7 / 6.25
-    Xgap = 0.02
-    Ygap = asp * 0.02
-    X0 = 0.1275
-    X2 = 0.98
+    Xgap = 0.01
+    Ygap = asp * Xgap
+    X0 = 0.145
+    X2 = 0.99
     Y0 = 0.005
     dX = (X2 - X0 - Xgap) / 2
     dY = asp * dX
     X1 = X0 + Xgap + dX
     Y1 = Y0 + dY + Ygap
-    fig = plt.figure(figsize=(7, 7 / asp), dpi=150)
+    fig = plt.figure(figsize=(6.05, 6.05 / asp), dpi=150)
     ax00 = fig.add_axes([X0, Y1, dX, dY], projection=proj)
     ax01 = fig.add_axes([X0, Y0, dX, dY], projection=proj)
     ax10 = fig.add_axes([X1, Y1, dX, dY], projection=proj)

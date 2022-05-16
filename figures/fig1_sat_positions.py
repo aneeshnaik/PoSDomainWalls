@@ -41,13 +41,13 @@ if __name__ == '__main__':
 
     # set up figure
     asp = 7 / 6.75
-    Xgap = 0.035
-    left = 0.08
-    right = 0.98
-    bottom = 0.06
+    Xgap = 0.0325
+    left = 0.09
+    right = 0.99
+    bottom = 0.065
     dX = (right - left - Xgap) / 2
     dY = asp * dX
-    fig = plt.figure(figsize=(7, 7 / asp), dpi=150)
+    fig = plt.figure(figsize=(6.05, 6.05 / asp), dpi=150)
     ax00 = fig.add_axes([left, bottom + dY, dX, dY])
     ax01 = fig.add_axes([left, bottom, dX, dY])
     ax10 = fig.add_axes([left + Xgap + dX, bottom + dY, dX, dY])
